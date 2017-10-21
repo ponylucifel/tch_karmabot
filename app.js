@@ -48,7 +48,6 @@ client.on("chat", function (channel, userstate, message, self) {
     if(temp.indexOf("how are you")!= -1 || temp.indexOf("how are u")!= -1){
         client.action(chatroom, "I'm fine noob.");
     }
-<<<<<<< Updated upstream
     temp = message.substring(message.lastIndexOf("@")+1,message.lastIndexOf("++"));
     if(dict[temp]){
         dict[temp] += 1; 
@@ -58,22 +57,6 @@ client.on("chat", function (channel, userstate, message, self) {
         console.log(dict);
     }
 
-=======
-    request({
-        uri: ChatURL,
-        }, function(error, response, body) {
-        var $ = cheerio.load(body);
-
-        $(".entry-title > a").each(function() {
-        var link = $(this);
-        var text = link.text();
-        var href = link.attr("href");
-
-        console.log(text + " -> " + href);
-        });
-    });
-        
->>>>>>> Stashed changes
 });
 
 client.on('connected', function(address, port){

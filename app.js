@@ -1,5 +1,7 @@
 var tmi = require('tmi.js');
-var map = {};
+// keeps track of all user's karma
+var dict = {};
+var botPassword = "oauth:vi0vhkpbl7x0frm3dxnpuzgwp88hxi";
 var options = {
     options:{ 
         debug: true
@@ -9,41 +11,35 @@ var options = {
         reconnect: true
     },
     identity: {
-        username: "TestChatBot",
-        password: "oauth:x06swipi051y8xfakhihl6hgoo4we4"
+        username: "KarmaBot",
+        password: botPassword
     },
-    channels: ["blazedspeeder"]
+    channels: ["blazedspeeder", "misterstytch", "du_tum_mai"]
 };
+var chatroom = "du_tum_mai";
+
 var client = new tmi.client(options);
 
 client.connect();
 client.on("chat", function (channel, userstate, message, self) {
     // Input which chatroom to use
-    var chatroom = "blazedspeeder";
 
     // Don't listen to my own messages..
     if (self) return;
 
-    var temp = message.toLowerCase();
-    // Do your stuff.
-    if(temp.indexOf("hello")!= -1|| temp.indexOf("hey")!= -1){
-        client.action(chatroom, "Hello, " + userstate['display-name'] +", how are you, noob?")
-    }
-
-    if(temp.indexOf("how are you")!= -1 || temp.indexOf("how are u")!= -1){
-        client.action(chatroom, "I'm fine noob.");
-    }
-    temp = message.substring(message.lastIndexOf("@")+1,message.lastIndexOf("++"));
-    if(dict[temp]){
-        dict[temp] += 1; 
+    var karmaUser = message.substring(message.lastIndexOf("@")+1,message.lastIndexOf("++"));
+    console.log(karmaUser);
+    if(dict[karmaUser]){
+        dict[karmaUser] += 1;
         console.log(dict);
+        if (dict[karmaUser]%5 === 0){
+            client.action(chatroom, karmaUser +" accumulated "+ dict[karmaUser] +" karma points, Great job!"); 
+        }else{
+            client.action(chatroom, karmaUser +" has been given 1 karma point."); 
+        }
     }else{
-        dict[temp] = 1;
+        dict[karmaUser] = 1;
         console.log(dict);
     }
 
-});
-
-client.on('connected', function(address, port){
-    client.action(chatroom,"Hey noob, wassup!");
 });

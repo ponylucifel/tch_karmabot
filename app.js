@@ -63,6 +63,13 @@ client.on("chat", function (channel, userstate, message, self) {
         console.log(`${message} - not a karma message`);
         return;
     }
+
+    if (karmaUser == userstate["display-name"]) {
+        console.log(`${karmaUser} attempting to give karma to himself`);
+        client.action(chatroom, "Don't be a smartass.")
+        return;
+    }
+
     
     if(dict[karmaUser]){
         dict[karmaUser] += 1; 

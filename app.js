@@ -1,10 +1,5 @@
 var tmi = require('tmi.js');
-<<<<<<< Updated upstream
-// keeps track of all user's karma
-var dict = {};
-=======
-var map = {}
->>>>>>> Stashed changes
+var map = {};
 var options = {
     options:{ 
         debug: true
@@ -21,21 +16,11 @@ var options = {
 };
 var client = new tmi.client(options);
 
-<<<<<<< Updated upstream
 client.connect();
 client.on("chat", function (channel, userstate, message, self) {
     // Input which chatroom to use
     var chatroom = "blazedspeeder";
 
-=======
-var chatroom = "blazedspeeder";
-var request = require("request");
-var cheerio = require("cheerio");
-
-client.on("chat", function (channel, userstate, message, self) {
-    // Input which chatroom to use
-    var ChatURL = "https://tmi.twitch.tv/group/user/"+chatroom+"/chatters";   
->>>>>>> Stashed changes
     // Don't listen to my own messages..
     if (self) return;
 

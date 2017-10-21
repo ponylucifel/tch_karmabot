@@ -28,7 +28,6 @@ client.on("chat", function (channel, userstate, message, self) {
     if (self) return;
 
     var karmaUser = message.substring(message.lastIndexOf("@")+1,message.lastIndexOf("++"));
-    console.log(karmaUser);
     if(dict[karmaUser]){
         dict[karmaUser] += 1;
         console.log(dict);

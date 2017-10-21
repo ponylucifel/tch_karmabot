@@ -32,9 +32,21 @@ client.on("chat", function (channel, userstate, message, self) {
     // Don't listen to my own messages..
     if (self) return;
 
-    var temp = message.toLowerCase();
+    var botCmd = message.toLowerCase();
 
-    if(temp.indexOf("!karmabot") != -1) {
+    if(botCmd == "!karma me"){
+        var karmaUser = userstate['display-name'];
+        if(dict[karmaUser]){
+            console.log("Invoking !karma me for "+ karmaUser);
+            client.action(chatroom, karmaUser +` has ${dict[karmaUser]} karma points.`); 
+            return;
+        }else{
+            client.action(chatroom, karmaUser +` has no karma points.`);
+            return; 
+        }
+    }
+
+    if(botCmd == "!karma") {
         var items = Object.keys(dict).map(function(key) {
             return [key, dict[key]];
         }); 
@@ -58,7 +70,7 @@ client.on("chat", function (channel, userstate, message, self) {
         return;
     }
 
-    karmaUser = message.substring(message.lastIndexOf("@")+1,message.indexOf("+"));
+    var karmaUser = message.substring(message.lastIndexOf("@")+1,message.indexOf("+"));
     if (karmaUser.length == 0) {
         console.log(`${message} - not a karma message`);
         return;
@@ -69,7 +81,6 @@ client.on("chat", function (channel, userstate, message, self) {
         client.action(chatroom, "Don't be a smartass.")
         return;
     }
-
     
     if(dict[karmaUser]){
         dict[karmaUser] += 1; 

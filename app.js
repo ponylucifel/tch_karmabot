@@ -5,8 +5,8 @@ var dict = {};
 var botPassword = "oauth:vi0vhkpbl7x0frm3dxnpuzgwp88hxi";
 var rankLimit = 3;
 var karmaUser = "";
-const myRegexpPlus = /^@([A-Za-z0-9_]*)(?:\+)*$/gm;
-const myRegexpMinus = /^@([A-Za-z0-9_]*)(?:\-)*$/gm; 
+const myRegexpPlus = /^.*@([A-Za-z0-9_]*)(?:\+)+.*$/gm;
+const myRegexpMinus = /^.*@([A-Za-z0-9_]*)(?:\-)+.*$/gm; 
 var options = {
     options:{ 
         debug: true
@@ -116,7 +116,7 @@ client.on("chat", function (channel, userstate, message, self) {
 
     // Feature: deduct karma to other users , announce when user acquired a point or meet some points treshold
     karmaUser = myRegexpMinus.exec(message);
-    if(karmaUser[1]){
+    if(karmaUser){
         if (karmaUser[1] != "@") {
             if (karmaUser[1] == userstate["display-name"]) {
                 console.log(`${karmaUser[1]} attempting to deduct his karma`);
@@ -143,5 +143,5 @@ client.on("chat", function (channel, userstate, message, self) {
     
     }
     console.log("User failed to increment / decrement karma.")
-    client.action(chatroom, `Sorry don't know what you're trying to do.`);
+    //client.action(chatroom, `Sorry don't know what you're trying to do.`);
 });

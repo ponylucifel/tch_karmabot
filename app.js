@@ -19,7 +19,7 @@ var options = {
         username: "KarmaBot",
         password: botPassword
     },
-    channels: ["misterstytch"]
+    channels: ["misterstytch", "du_tum_mai"]
 };
 
 var chatroom = "misterstytch";

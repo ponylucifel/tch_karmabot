@@ -1,4 +1,11 @@
 var tmi = require('tmi.js');
+var request = require('request');
+
+var header = {
+    'Content-Type': 'application/x-www-form-urlencoded'
+};
+
+
 
 // keeps track of all user's karma
 var dict = {};
@@ -19,10 +26,10 @@ var options = {
         username: "KarmaBot",
         password: botPassword
     },
-    channels: ["misterstytch"]
+    channels: ["du_tum_mai"]
 };
 
-var chatroom = "misterstytch";
+var chatroom = "du_tum_mai";
 // var chatroom = "tch_karmabot"
 
 var client = new tmi.client(options);
@@ -98,6 +105,18 @@ client.on("chat", function (channel, userstate, message, self) {
                 if (dict[karmaUser[1]] != 0 && dict[karmaUser[1]]%5 === 0){
                     client.action(chatroom, karmaUser[1] +" has accumulated "+ dict[karmaUser[1]] +" karma points, Great job!");
                     myRegexpPlus.lastIndex = 0;
+                    var httpOptions = {
+                        url: 'http://localhost:3000/',
+                        method: 'POST',
+                        headers: header,
+                        form: {'username': karmaUser[1], 'points': dict[karmaUser[1]].toString()}
+                    }
+
+                    request(httpOptions, function(error, res, body){
+                        if(!error && res.statusCode == 200) {
+                            console.log(body);
+                        }
+                    });
                     return; 
                 }else{
                     client.action(chatroom, karmaUser[1] +` now has ${dict[karmaUser[1]]} karma point.`); 

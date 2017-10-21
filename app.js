@@ -5,7 +5,8 @@ var dict = {};
 var botPassword = "oauth:vi0vhkpbl7x0frm3dxnpuzgwp88hxi";
 var rankLimit = 3;
 var karmaUser = "";
-
+const myRegexpPlus = /^@([A-Za-z0-9_]*)(?:\+)*$/gm;
+const myRegexpMinus = /^@([A-Za-z0-9_]*)(?:\-)*$/gm; 
 var options = {
     options:{ 
         debug: true
@@ -73,58 +74,74 @@ client.on("chat", function (channel, userstate, message, self) {
         return;
     }
 
-    karmaUser = message.substring(message.lastIndexOf("@")+1,message.indexOf("+"));
+    karmaUser = myRegexpPlus.exec(message);
+
     // Feature: detect non karma bot commands
-    if (karmaUser.length == 0) {
-        console.log(`${message} - not a karma message`);
-        return;
-    }
-    if (karmaUser != "@") {
-        if (karmaUser == userstate["display-name"]) {
-            console.log(`${karmaUser} attempting to give karma to himself`);
-            client.action(chatroom, "Don't be a smartass.")
+    if(karmaUser){
+        if (karmaUser[1].length == 0) {
+            console.log(`${message} - not a karma message`);
+            myRegexpPlus.lastIndex = 0;
             return;
         }
-        
-        // Feature: add karma to other users , announce when user acquired a point or meet some points treshold
-        if(dict[karmaUser]){
-            dict[karmaUser] += 1; 
-            console.log(dict);
-            if (dict[karmaUser] != 0 && dict[karmaUser]%5 === 0){
-                client.action(chatroom, karmaUser +" has accumulated "+ dict[karmaUser] +" karma points, Great job!");
-                return; 
-            }else{
-                client.action(chatroom, karmaUser +` now has ${dict[karmaUser]} karma point.`); 
+        if (karmaUser[1] != "@") {
+            if (karmaUser[1] == userstate["display-name"]) {
+                console.log(`${karmaUser[1]} attempting to give karma to himself`);
+                client.action(chatroom, "Don't be a smartass.");
+                myRegexpPlus.lastIndex = 0;
                 return;
             }
-        } else {
-            dict[karmaUser] = 1;
-            client.action(chatroom, karmaUser +" has his/her first karma point!"); 
-            console.log(dict);
-            return;
+            
+            // Feature: add karma to other users , announce when user acquired a point or meet some points treshold
+            if(dict[karmaUser[1]]){
+                dict[karmaUser[1]] += 1; 
+                console.log(dict);
+                if (dict[karmaUser[1]] != 0 && dict[karmaUser[1]]%5 === 0){
+                    client.action(chatroom, karmaUser[1] +" has accumulated "+ dict[karmaUser[1]] +" karma points, Great job!");
+                    myRegexpPlus.lastIndex = 0;
+                    return; 
+                }else{
+                    client.action(chatroom, karmaUser[1] +` now has ${dict[karmaUser[1]]} karma point.`); 
+                    myRegexpPlus.lastIndex = 0;
+                    return;
+                }
+            } else {
+                dict[karmaUser[1]] = 1;
+                client.action(chatroom, karmaUser[1] +" has his/her first karma point!"); 
+                console.log(dict);
+                myRegexpPlus.lastIndex = 0;
+                return;
+            }
         }
     }
 
     // Feature: deduct karma to other users , announce when user acquired a point or meet some points treshold
-    karmaUser = message.substring(message.lastIndexOf("@")+1,message.indexOf("-"));
-    if (karmaUser != "@") {
-        if (karmaUser == userstate["display-name"]) {
-            console.log(`${karmaUser} attempting to deduct his karma`);
-            client.action(chatroom, "Don't try reducing your own karma.")
-            return;
+    karmaUser = myRegexpMinus.exec(message);
+    if(karmaUser[1]){
+        if (karmaUser[1] != "@") {
+            if (karmaUser[1] == userstate["display-name"]) {
+                console.log(`${karmaUser[1]} attempting to deduct his karma`);
+                client.action(chatroom, "Don't try reducing your own karma.");
+                myRegexpMinus.lastIndex = 0;
+                console.log(dict);
+                return;
+            }
+            if(dict[karmaUser[1]]){
+                dict[karmaUser[1]] -= 1; 
+                console.log(dict);
+                client.action(chatroom, karmaUser[1] +` now has ${dict[karmaUser[1]]} karma point.`); 
+                myRegexpMinus.lastIndex = 0;
+                console.log(dict);
+                return;
+            }else{
+                dict[karmaUser[1]] = -1;
+                client.action(chatroom, karmaUser[1] +` now has ${dict[karmaUser[1]]} karma point.`); 
+                myRegexpMinus.lastIndex = 0;
+                console.log(dict);
+                return;
+            }   
         }
-        if(dict[karmaUser]){
-            dict[karmaUser] -= 1; 
-            console.log(dict);
-            client.action(chatroom, karmaUser +` now has ${dict[karmaUser]} karma point.`); 
-            return;
-        }else{
-            dict[karmaUser] = -1;
-            client.action(chatroom, karmaUser +` now has ${dict[karmaUser]} karma point.`); 
-            return;
-        }   
+    
     }
-
     console.log("User failed to increment / decrement karma.")
     client.action(chatroom, `Sorry don't know what you're trying to do.`);
 });

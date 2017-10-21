@@ -12,24 +12,29 @@ var options = {
         username: "TestChatBot",
         password: "oauth:x06swipi051y8xfakhihl6hgoo4we4"
     },
-    channels: ["misterstytch"]
+    channels: ["blazedspeeder"]
 };
 
 var client = new tmi.client(options);
 client.connect();
 
 client.on("chat", function (channel, userstate, message, self) {
+    // Input which chatroom to use
+    var chatroom = "blazedspeeder";
+    var ChatURL = "https://tmi.twitch.tv/group/user/"+chatroom+"/chatters";   
     // Don't listen to my own messages..
     if (self) return;
     var temp = message.toLowerCase();
     // Do your stuff.
     if(temp.indexOf("hello")!= -1|| temp.indexOf("hey")!= -1){
-        client.action("misterstytch", "Hello, " + userstate['display-name'] +", how are you, noob?")
+        client.action(chatroom, "Hello, " + userstate['display-name'] +", how are you, noob?")
     }
 
     if(temp.indexOf("how are you")!= -1 || temp.indexOf("how are u")!= -1){
-        client.action("misterstytch", "I'm fine noob.");
+        client.action(chatroom, "I'm fine noob.");
     }
+    if(temp.endsWith("++"))
+        console.log("Yes")
 });
 
 client.on('connected', function(address, port){
